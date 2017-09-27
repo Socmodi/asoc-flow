@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:engine="http://org.asocframework.com/schema/asoc-flow"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task.xsd
+        http://org.asocframework.com/schema/asoc-flow
+        http://org.asocframework.com/schema/asoc-flow/process.xsd">
+
+    <task:annotation-driven/>
+    <context:component-scan base-package="org.asocframework.flow" />
+
+    <engine:flow id="asocWorkFlowContext">
+        <engine:events>
+            <engine:event event-name="demo">
+                <engine:process bean="tradePart" order="1" useful="true" async="false"/>
+                <engine:process bean="notifyPart" order="2" useful="true" async="false"/>
+                <engine:process bean="dataPart" order="0" useful="true" async="false"/>
+            </engine:event>
+        </engine:events>
+
+        <engine:plugin name="accident" use="true"/>
+
+    </engine:flow>
+
+</beans>

@@ -8,7 +8,7 @@ package org.asocframework.flow.plugin;
 public class MonitorPlugin implements Plugin{
 
     public void init() {
-
+        
     }
 
 }

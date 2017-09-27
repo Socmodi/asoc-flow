@@ -17,7 +17,10 @@ public class EngineHandler {
 
     protected static Map<String,EventHolder> eventZone;
 
-    public static EventContext execute(String eventName,EventContext context){
+    private EngineHandler() {
+    }
+
+    public static EventContext execute(String eventName, EventContext context){
         EventHolder holder = engine.getHolders().get(eventName);
         if(holder==null){
             throw new EngineRuntimeException("非法事件");

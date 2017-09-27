@@ -11,6 +11,7 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="events" minOccurs="1" maxOccurs="unbounded"/>
+                <xsd:element ref="plugin" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
             <xsd:attribute name="id" type="xsd:string" use="required" />
         </xsd:complexType>
@@ -46,6 +47,13 @@
         <xsd:complexType>
             <xsd:attribute name="name" use="required" type="xsd:string"></xsd:attribute>
             <xsd:attribute name="value" use="required" type="xsd:string"></xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="plugin">
+        <xsd:complexType>
+            <xsd:attribute name="name" use="required" type="xsd:string"></xsd:attribute>
+            <xsd:attribute name="use" use="required" type="xsd:boolean"></xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 
