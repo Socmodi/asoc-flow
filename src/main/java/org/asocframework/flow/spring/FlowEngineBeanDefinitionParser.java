@@ -2,7 +2,7 @@ package org.asocframework.flow.spring;
 
 import org.asocframework.flow.constants.FlowEngineColumn;
 import org.asocframework.flow.constants.FlowEngineTag;
-import org.asocframework.flow.context.FlowEngine;
+import org.asocframework.flow.engine.FlowEngine;
 import org.asocframework.flow.event.EventHolder;
 import org.asocframework.flow.event.EventInvoker;
 import org.springframework.beans.factory.config.BeanDefinition;

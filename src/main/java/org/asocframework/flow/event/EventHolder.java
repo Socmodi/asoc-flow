@@ -12,6 +12,8 @@ public class EventHolder {
 
     private String eventName;
 
+    private boolean active;
+
     private List<EventInvoker> invokers = new ArrayList<EventInvoker>();
 
     public String getEventName() {
@@ -30,4 +32,11 @@ public class EventHolder {
         this.invokers = invokers;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

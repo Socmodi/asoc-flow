@@ -6,4 +6,13 @@ package org.asocframework.flow.exception;
  * @desc
  */
 public class EngineRuntimeException extends RuntimeException{
+
+    public EngineRuntimeException() {
+        super();
+    }
+
+    public EngineRuntimeException(String message) {
+        super(message);
+    }
+
 }
