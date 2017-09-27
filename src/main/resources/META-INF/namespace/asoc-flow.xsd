@@ -1,0 +1,52 @@
+
+<xsd:schema xmlns="http://org.asocframework.com/schema/asoc-flow"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:beans="http://www.springframework.org/schema/beans"
+                targetNamespace="http://org.asocframework.com/schema/asoc-flow"
+                elementFormDefault="qualified"
+                attributeFormDefault="unqualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
+
+    <xsd:element name="flow">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="events" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:string" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="events">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="event" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="event">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="process" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="event-name" type="xsd:string" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="process">
+        <xsd:complexType>
+            <xsd:attribute name="bean" type="xsd:string" use="required" />
+            <xsd:attribute name="order" type="xsd:int" use="optional" default="0"/>
+            <xsd:attribute name="useful" type="xsd:boolean" use="optional" default="true"/>
+            <xsd:attribute name="async" type="xsd:boolean" use="optional" default="false"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="property">
+        <xsd:complexType>
+            <xsd:attribute name="name" use="required" type="xsd:string"></xsd:attribute>
+            <xsd:attribute name="value" use="required" type="xsd:string"></xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
