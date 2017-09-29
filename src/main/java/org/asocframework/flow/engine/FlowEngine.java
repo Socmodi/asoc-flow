@@ -4,6 +4,7 @@ import org.asocframework.flow.context.EngineContext;
 import org.asocframework.flow.event.EventHolder;
 import org.asocframework.flow.exception.EngineRuntimeException;
 import org.asocframework.flow.plugin.Plugin;
+import org.asocframework.flow.plugin.PluginHandler;
 import org.asocframework.flow.plugin.Plugins;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ public class FlowEngine{
     private Map<String,EventHolder> holders = new HashMap();
 
     private Map<String,Boolean> plugins = new HashMap();
+
+    private PluginHandler pluginHandler;
 
     @PostConstruct
     private void plugins(){

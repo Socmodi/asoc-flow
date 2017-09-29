@@ -13,7 +13,7 @@
         http://www.springframework.org/schema/task
         http://www.springframework.org/schema/task/spring-task.xsd
         http://org.asocframework.com/schema/asoc-flow
-        http://org.asocframework.com/schema/asoc-flow/process.xsd">
+        http://org.asocframework.com/schema/asoc-flow/asoc-flow.xsd">
 
     <task:annotation-driven/>
     <context:component-scan base-package="org.asocframework.flow" />
@@ -26,9 +26,11 @@
                 <engine:process bean="dataPart" order="0" useful="true" async="false"/>
             </engine:event>
         </engine:events>
-
-        <engine:plugin name="accident" use="true"/>
-
+        <engine:plugins>
+            <engine:plugin bean="monitor" useful="true"/>
+            <engine:plugin bean="accident" useful="true"/>
+        </engine:plugins>
     </engine:flow>
+
 
 </beans>

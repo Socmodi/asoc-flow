@@ -1,21 +1,22 @@
-
 <xsd:schema xmlns="http://org.asocframework.com/schema/asoc-flow"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                xmlns:beans="http://www.springframework.org/schema/beans"
                 targetNamespace="http://org.asocframework.com/schema/asoc-flow"
                 elementFormDefault="qualified"
                 attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
 
     <xsd:element name="flow">
+
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="events" minOccurs="1" maxOccurs="unbounded"/>
-                <xsd:element ref="plugin" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="plugins" minOccurs="1" maxOccurs="1"/>
             </xsd:sequence>
             <xsd:attribute name="id" type="xsd:string" use="required" />
         </xsd:complexType>
     </xsd:element>
+
+
 
     <xsd:element name="events">
         <xsd:complexType>
@@ -43,18 +44,252 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="property">
+   <!-- <xsd:element name="property">
         <xsd:complexType>
             <xsd:attribute name="name" use="required" type="xsd:string"></xsd:attribute>
             <xsd:attribute name="value" use="required" type="xsd:string"></xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>-->
+
+    <xsd:element name="plugins">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="plugin" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 
     <xsd:element name="plugin">
         <xsd:complexType>
-            <xsd:attribute name="name" use="required" type="xsd:string"></xsd:attribute>
-            <xsd:attribute name="use" use="required" type="xsd:boolean"></xsd:attribute>
+            <xsd:attribute name="bean" type="xsd:string" use="optional"/>
+            <xsd:attribute name="useful" type="xsd:boolean" use="optional" default="true"/>
         </xsd:complexType>
     </xsd:element>
+    <!--
+
+    <xsd:complexType name="identifiedType" abstract="true">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	The unique identifier for a bean. The scope of the identifier
+	is the enclosing bean factory.
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="id" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	The unique identifier for a bean. A bean id may not be used more than once
+	within the same <beans> element.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:element name="bean">
+        <xsd:annotation>
+            <xsd:documentation source="java:org.springframework.beans.factory.config.BeanDefinition"><![CDATA[
+	Defines a single (usually named) bean.
+
+	A bean definition may contain nested tags for constructor arguments,
+	property values, lookup methods, and replaced methods. Mixing constructor
+	injection and setter injection on the same bean is explicitly supported.
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="identifiedType">
+                    <xsd:group ref="beanElements"/>
+                    <xsd:attributeGroup ref="beanAttributes"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:group name="beanElements">
+        <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element ref="property"/>
+                <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:group>
+
+    <xsd:element name="property" type="propertyType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	Bean definitions can have zero or more properties.
+	Property elements correspond to JavaBean setter methods exposed
+	by the bean classes. Spring supports primitives, references to other
+	beans in the same or related factories, lists, maps and properties.
+			]]></xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <xsd:complexType name="propertyType">
+        <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+                <xsd:element ref="ref"/>
+                <xsd:element ref="value"/>
+                <xsd:any namespace="##other" processContents="strict"/>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	The name of the property, following JavaBean naming conventions.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="ref" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	A short-cut alternative to a nested "<ref bean='...'/>".
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="value" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	A short-cut alternative to a nested "<value>...</value>" element.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:element name="ref">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	Defines a reference to another bean in this factory or an external
+	factory (parent or included factory).
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:restriction base="xsd:anyType">
+                    <xsd:attribute name="bean" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation><![CDATA[
+	The name of the referenced bean.
+							]]></xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="parent" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation><![CDATA[
+	The name of the referenced bean in a parent factory.
+						]]></xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:element name="value">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	Contains a string representation of a property value.
+	The property may be a string, or may be converted to the required
+	type using the JavaBeans PropertyEditor machinery. This makes it
+	possible for application developers to write custom PropertyEditor
+	implementations that can convert strings to arbitrary target objects.
+
+	Note that this is recommended for simple objects only. Configure
+	more complex objects by populating JavaBean properties with
+	references to other beans.
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType mixed="true">
+            <xsd:choice minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:attribute name="type" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+	The exact type that the value should be converted to. Only needed
+	if the type of the target property or constructor argument is
+	too generic: for example, in case of a collection element.
+					]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:attributeGroup name="beanAttributes">
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	Can be used to create one or more aliases illegal in an (XML) id.
+	Multiple aliases can be separated by any number of spaces, commas,
+	or semi-colons (or indeed any mixture of the three).
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="class" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation source="java:java.lang.Class"><![CDATA[
+	The fully qualified name of the bean's class, except if it serves only
+	as a parent definition for child bean definitions.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="parent" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	The name of the parent bean definition.
+
+	Will use the bean class of the parent if none is specified, but can
+	also override it. In the latter case, the child bean class must be
+	compatible with the parent, i.e. accept the parent's property values
+	and constructor argument values, if any.
+
+	A child bean definition will inherit constructor argument values,
+	property values and method overrides from the parent, with the option
+	to add new values. If init method, destroy method, factory bean and/or
+	factory method are specified, they will override the corresponding
+	parent settings.
+
+	The remaining settings will always be taken from the child definition:
+	depends on, autowire mode, scope, lazy init.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="scope" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	The scope of this bean: typically "singleton" (one shared instance,
+	which will be returned by all calls to getBean with the given id), or
+	"prototype" (independent instance resulting from each call to getBean).
+
+	By default, a bean will be a singleton, unless the bean has a parent
+	bean definition in which case it will inherit the parent's scope.
+
+	Singletons are most commonly used, and are ideal for multi-threaded
+	service objects. Further scopes, such as "request" or "session", might
+	be supported by extended bean factories (e.g. in a web environment).
+
+	Inner bean definitions inherit the singleton status of their containing
+	bean definition, unless explicitly specified: The inner bean will be a
+	singleton if the containing bean is a singleton, and a prototype if
+	the containing bean has any other scope.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="abstract" type="xsd:boolean">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	Is this bean "abstract", that is, not meant to be instantiated itself
+	but rather just serving as parent for concrete child bean definitions?
+	The default is "false". Specify "true" to tell the bean factory to not
+	try to instantiate that particular bean in any case.
+
+	Note: This attribute will not be inherited by child bean definitions.
+	Hence, it needs to be specified per abstract bean definition.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+
+    -->
 
 </xsd:schema>
