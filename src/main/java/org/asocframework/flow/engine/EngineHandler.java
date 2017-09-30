@@ -18,6 +18,7 @@ public class EngineHandler {
     protected static Map<String,EventHolder> eventZone;
 
     private EngineHandler() {
+
     }
 
     public static EventContext execute(String eventName, EventContext context){
@@ -25,8 +26,9 @@ public class EngineHandler {
         if(holder==null){
             throw new EngineRuntimeException("非法事件");
         }
-
         return context;
     }
+
+
 
 }

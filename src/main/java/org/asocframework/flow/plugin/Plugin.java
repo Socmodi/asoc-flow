@@ -7,6 +7,8 @@ package org.asocframework.flow.plugin;
  */
 public interface Plugin {
 
+    PluginType getType();
+
     void init();
 
 }

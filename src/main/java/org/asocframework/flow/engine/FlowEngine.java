@@ -6,9 +6,18 @@ import org.asocframework.flow.exception.EngineRuntimeException;
 import org.asocframework.flow.plugin.Plugin;
 import org.asocframework.flow.plugin.PluginHandler;
 import org.asocframework.flow.plugin.Plugins;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import javax.annotation.PostConstruct;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +26,6 @@ import java.util.Map;
  * @desc
  */
 public class FlowEngine{
-
 
     private Map<String,EventHolder> holders = new HashMap();
 
@@ -66,4 +74,28 @@ public class FlowEngine{
     public void setPlugins(Map<String, Boolean> plugins) {
         this.plugins = plugins;
     }
+
+    public PluginHandler getPluginHandler() {
+        return pluginHandler;
+    }
+
+    public void setPluginHandler(PluginHandler pluginHandler) {
+        this.pluginHandler = pluginHandler;
+    }
+
+    public static void main(String args[]){
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            ClassLoader classLoader = contextClassLoader;
+            Thread.currentThread().setContextClassLoader(classLoader);
+            String fileName = classLoader.getResource("META-INF/dubbo/internal").getFile();
+            System.out.println(fileName);
+            File file = new File(fileName);
+            System.out.println(file.isFile());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
 }

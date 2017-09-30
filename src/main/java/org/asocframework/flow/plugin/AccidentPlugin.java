@@ -7,9 +7,23 @@ import javax.sql.DataSource;
  * @version $Id: AccidentPlugin，v 1.0 2017/9/27 19:17 jiqing Exp $
  * @desc
  */
-public class AccidentPlugin implements Plugin{
+public class AccidentPlugin extends AbstrctPlugin{
 
     private DataSource dataSource;
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public PluginType getType() {
+        return PluginType.AROUND_PLUGIN;
+    }
+
 
     public void init() {
 
