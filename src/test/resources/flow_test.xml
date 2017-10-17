@@ -18,18 +18,15 @@
     <task:annotation-driven/>
     <context:component-scan base-package="org.asocframework.flow" />
 
-    <engine:flow id="asocWorkFlowContext">
+    <engine:flow id="flowEngineContext" class="org.asocframework.flow.engine.FlowEngineContext">
         <engine:events>
             <engine:event event-name="demo">
-                <engine:process bean="tradePart" order="1" useful="true" async="false"/>
-                <engine:process bean="notifyPart" order="2" useful="true" async="false"/>
-                <engine:process bean="dataPart" order="0" useful="true" async="false"/>
+                <engine:process bean="tradePart"  order="1" useful="true" async="false"/>
+               <!-- <engine:process bean="notifyPart" order="2" useful="true" async="false"/>
+                <engine:process bean="dataPart" order="0" useful="true" async="false"/>-->
             </engine:event>
         </engine:events>
-        <engine:plugins>
-            <engine:plugin bean="monitor" useful="true"/>
-            <engine:plugin bean="accident" useful="true"/>
-        </engine:plugins>
+        <engine:property name="accidentMirror" value="true"/>
     </engine:flow>
 
 

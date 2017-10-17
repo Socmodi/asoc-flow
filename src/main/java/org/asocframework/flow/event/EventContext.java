@@ -1,5 +1,7 @@
 package org.asocframework.flow.event;
 
+import org.asocframework.flow.store.AccidentMirror;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Map;
  * @desc
  */
 public class EventContext<P,R> implements Serializable{
+
     /**
      * 指令
      */
@@ -19,7 +22,7 @@ public class EventContext<P,R> implements Serializable{
     /**
      * 组件
      */
-    private List<Object> beans;
+    private transient List<EventInvoker> invokers;
 
     /**
      * 请求参数
@@ -50,6 +53,9 @@ public class EventContext<P,R> implements Serializable{
      * 透传数据
      */
     private Map<String, Object> attachments = new HashMap();
+
+
+    private transient AccidentMirror accidentMirror;
 
 
 
@@ -108,12 +114,12 @@ public class EventContext<P,R> implements Serializable{
         this.event = event;
     }
 
-    public List<Object> getBeans() {
-        return beans;
+    public List<EventInvoker> getInvokers() {
+        return invokers;
     }
 
-    public void setBeans(List<Object> beans) {
-        this.beans = beans;
+    public void setInvokers(List<EventInvoker> invokers) {
+        this.invokers = invokers;
     }
 
     public boolean isSuccess() {
@@ -138,6 +144,14 @@ public class EventContext<P,R> implements Serializable{
 
     public void setAttachments(Map<String, Object> attachments) {
         this.attachments = attachments;
+    }
+
+    public AccidentMirror getAccidentMirror() {
+        return accidentMirror;
+    }
+
+    public void setAccidentMirror(AccidentMirror accidentMirror) {
+        this.accidentMirror = accidentMirror;
     }
 
     /**

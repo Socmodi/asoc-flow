@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mapper namespace="asoc.dts.activity" >
+    
+    <resultMap id="BaseResultMap" type="org.asocframework.dts.store.dal.DtsActivityDO" >
+        <result column="id" property="id" />
+        <result column="invokers_info" property="state" />
+        <result column="status" property="parentId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <insert id="insert" parameterType="org.asocframework.dts.store.dal.DtsActivityDO" >
+        insert into atom_activity (tx_id, state, parent_id,name)
+        values (#{txId}, #{state}, #{parentId},#{name})
+    </insert>
+
+    <insert id="delete" >
+    update atom_activity set state ='DEL' where  tx_id=#{txId}
+    </insert>
+
+    <select id="getActivityByPtxIdAndName" resultMap="BaseResultMap">
+         select * from atom_activity where parent_id=#{parentId} and name=#{name};
+    </select>
+    
+</mapper>

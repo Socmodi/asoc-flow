@@ -1,5 +1,7 @@
 package org.asocframework.flow.plugin;
 
+import org.asocframework.flow.event.EventContext;
+
 import javax.sql.DataSource;
 
 /**
@@ -9,15 +11,9 @@ import javax.sql.DataSource;
  */
 public class AccidentPlugin extends AbstrctPlugin{
 
+    private boolean accidentMirror;
+
     private DataSource dataSource;
-
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     @Override
     public PluginType getType() {
@@ -27,6 +23,29 @@ public class AccidentPlugin extends AbstrctPlugin{
 
     public void init() {
 
+    }
+
+    public boolean processAccident(EventContext context){
+
+
+        return true;
+
+    }
+
+    public boolean isAccidentMirror() {
+        return accidentMirror;
+    }
+
+    public void setAccidentMirror(boolean accidentMirror) {
+        this.accidentMirror = accidentMirror;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
 }

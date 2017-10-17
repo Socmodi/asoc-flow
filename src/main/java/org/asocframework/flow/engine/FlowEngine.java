@@ -6,18 +6,11 @@ import org.asocframework.flow.exception.EngineRuntimeException;
 import org.asocframework.flow.plugin.Plugin;
 import org.asocframework.flow.plugin.PluginHandler;
 import org.asocframework.flow.plugin.Plugins;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.xml.DomUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import javax.annotation.PostConstruct;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.sql.DataSource;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +25,8 @@ public class FlowEngine{
     private Map<String,Boolean> plugins = new HashMap();
 
     private PluginHandler pluginHandler;
+
+    private DataSource dataSource;
 
     @PostConstruct
     private void plugins(){
@@ -88,7 +83,7 @@ public class FlowEngine{
         try {
             ClassLoader classLoader = contextClassLoader;
             Thread.currentThread().setContextClassLoader(classLoader);
-            String fileName = classLoader.getResource("META-INF/dubbo/internal").getFile();
+            String fileName = classLoader.getResource("META-INF/flow").getFile();
             System.out.println(fileName);
             File file = new File(fileName);
             System.out.println(file.isFile());

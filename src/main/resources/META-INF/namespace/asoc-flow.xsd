@@ -4,18 +4,53 @@
                 elementFormDefault="qualified"
                 attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
-
+<!--
     <xsd:element name="flow">
-
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="events" minOccurs="1" maxOccurs="unbounded"/>
                 <xsd:element ref="plugins" minOccurs="1" maxOccurs="1"/>
             </xsd:sequence>
             <xsd:attribute name="id" type="xsd:string" use="required" />
+            <xsd:attribute name="dataSource" type="xsd:string" />
+
+            <xsd:extension base="identifiedType">
+                <xsd:group ref="beanElements"/>
+                <xsd:attributeGroup ref="beanAttributes"/>
+            </xsd:extension>
+        </xsd:complexType>
+    </xsd:element>-->
+
+    <xsd:element name="flow">
+        <xsd:annotation>
+            <xsd:documentation source="java:org.springframework.beans.factory.config.BeanDefinition"><![CDATA[
+	Defines a single (usually named) bean.
+
+	A bean definition may contain nested tags for constructor arguments,
+	property values, lookup methods, and replaced methods. Mixing constructor
+	injection and setter injection on the same bean is explicitly supported.
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="identifiedType">
+                    <xsd:group ref="flowGroups"/>
+                    <xsd:attributeGroup ref="beanAttributes"/>
+                </xsd:extension>
+            </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:group name="flowGroups">
+        <xsd:sequence>
+            <xsd:element ref="events" minOccurs="1" maxOccurs="unbounded"/>
+<!--            <xsd:element ref="plugins" minOccurs="1" maxOccurs="1"/>-->
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element ref="property"/>
+                <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:group>
 
 
     <xsd:element name="events">
@@ -41,6 +76,7 @@
             <xsd:attribute name="order" type="xsd:int" use="optional" default="0"/>
             <xsd:attribute name="useful" type="xsd:boolean" use="optional" default="true"/>
             <xsd:attribute name="async" type="xsd:boolean" use="optional" default="false"/>
+            <xsd:attribute name="method" type="xsd:string" use="optional"/>
         </xsd:complexType>
     </xsd:element>
 
@@ -65,7 +101,7 @@
             <xsd:attribute name="useful" type="xsd:boolean" use="optional" default="true"/>
         </xsd:complexType>
     </xsd:element>
-    <!--
+
 
     <xsd:complexType name="identifiedType" abstract="true">
         <xsd:annotation>
@@ -290,6 +326,5 @@
         </xsd:attribute>
     </xsd:attributeGroup>
 
-    -->
 
 </xsd:schema>

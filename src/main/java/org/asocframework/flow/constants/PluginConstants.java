@@ -11,5 +11,7 @@ public class PluginConstants {
 
     public static final String ACCIDENT_PLUGIN = "accident";
 
+    public static final String PLUGINS_FILE = "META-INF/flow/org.asocframework.flow.plugin.Plugin";
+
 
 }

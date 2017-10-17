@@ -3,19 +3,27 @@ package org.asocframework.flow.spring;
 import org.asocframework.flow.constants.FlowEngineColumn;
 import org.asocframework.flow.constants.FlowEngineTag;
 import org.asocframework.flow.engine.FlowEngine;
+import org.asocframework.flow.engine.FlowEngineContext;
 import org.asocframework.flow.event.EventHolder;
 import org.asocframework.flow.event.EventInvoker;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
+import org.springframework.beans.factory.support.ManagedProperties;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+
 import java.util.List;
 import java.util.Map;
+
+import static javax.swing.text.html.CSS.getAttribute;
+import static sun.jvm.hotspot.oops.CellTypeState.ref;
 
 /**
  * @author jiqing
@@ -25,11 +33,35 @@ import java.util.Map;
 public class FlowEngineBeanDefinitionParser extends AbstractBeanDefinitionParser{
 
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(FlowEngine.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(FlowEngineContext.class);
         Element events = DomUtils.getChildElementByTagName(element, FlowEngineTag.EVENTS_TAG);
         factory.addPropertyValue(FlowEngineColumn.ENGINE_HOLDERS,parseHolders(events));
+        parserProperties(element,factory,FlowEngineContext.class);
         return factory.getBeanDefinition();
     }
+
+    private void parserProperties(Element element,BeanDefinitionBuilder factory,Class clazz){
+        List<Element> properties = DomUtils.getChildElementsByTagName(element,"property");
+        for (Element property : properties) {
+            parseProperty(property,factory,clazz);
+        }
+    }
+
+    private void parseProperty(Element property,BeanDefinitionBuilder builder,Class clazz){
+        String name = property.getAttribute("name");
+        String ref = property.getAttribute("ref");
+        if(ref!=null&&ref.length()>0){
+            builder.addPropertyReference(name,ref);
+            return;
+        }
+        String value = property.getAttribute("value");
+        if(value==null || value.length()<=0){
+            throw new RuntimeException();
+        }
+        builder.addPropertyValue(name,value);
+    }
+
+
 
     private Map<String,BeanDefinition> parseHolders(Element holders){
         List<Element> events = DomUtils.getChildElementsByTagName(holders, FlowEngineTag.EVENT_TAG);
