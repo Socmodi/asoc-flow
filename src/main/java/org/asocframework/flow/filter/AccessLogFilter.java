@@ -10,7 +10,9 @@ import org.asocframework.flow.event.EventContext;
  * @desc
  */
 public class AccessLogFilter implements Filter{
+
     public EventContext invoke(EngineInvoker invoker, EventContext context) {
         return invoker.invoke(context);
     }
+
 }

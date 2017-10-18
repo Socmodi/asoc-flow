@@ -2,10 +2,10 @@ package org.asocframework.flow.common.constants;
 
 /**
  * @author jiqing
- * @version $Id: PluginConstants，v 1.0 2017/9/27 19:47 jiqing Exp $
+ * @version $Id: FlowEngineConstants，v 1.0 2017/9/27 19:47 jiqing Exp $
  * @desc
  */
-public class ApplicationConstants {
+public class FlowEngineConstants {
 
     /*plugin*/
     public static final String MONITOR_PLUGIN = "monitor";

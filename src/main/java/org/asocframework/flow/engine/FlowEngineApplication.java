@@ -1,6 +1,6 @@
 package org.asocframework.flow.engine;
 
-import org.asocframework.flow.common.constants.ApplicationConstants;
+import org.asocframework.flow.common.constants.FlowEngineConstants;
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventHolder;
 import org.asocframework.flow.event.EventInvoker;
@@ -58,7 +58,7 @@ public class FlowEngineApplication {
         try {
             ClassLoader classLoader = this.getClass().getClassLoader();
             Thread.currentThread().setContextClassLoader(classLoader);
-            String fileName = classLoader.getResource(ApplicationConstants.PLUGINS_FILE).getFile();
+            String fileName = classLoader.getResource(FlowEngineConstants.PLUGINS_FILE).getFile();
             inputStream = new FileInputStream(fileName);
             Properties prop = new Properties();
             prop.load(inputStream);
@@ -97,7 +97,7 @@ public class FlowEngineApplication {
 
     private Plugin createPlugin(String pluginName,Class pluginClass) throws IllegalAccessException, InstantiationException {
         Plugin plugin = (Plugin) pluginClass.newInstance();
-        if(ApplicationConstants.ACCIDENT_PLUGIN.equals(pluginName)&&accidentMirror){
+        if(FlowEngineConstants.ACCIDENT_PLUGIN.equals(pluginName)&&accidentMirror){
             AccidentPlugin accidentPlugin = (AccidentPlugin) plugin;
             accidentPlugin.setAccidentMirror(accidentMirror);
             accidentPlugin.setDataSource(dataSource);

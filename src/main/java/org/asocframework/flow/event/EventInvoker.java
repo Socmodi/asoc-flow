@@ -1,5 +1,6 @@
 package org.asocframework.flow.event;
 
+
 import org.asocframework.flow.common.exception.EngineRuntimeException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -42,7 +43,7 @@ public class EventInvoker {
             return (EventContext) invoke.invoke(bean,context);
         } catch (InvocationTargetException e) {
             context.setSuccess(false);
-            throw new org.asocframework.flow.common.exception.EngineRuntimeException();
+            throw new EngineRuntimeException();
         }catch (Exception e) {
             context.setSuccess(false);
             throw new EngineRuntimeException();
