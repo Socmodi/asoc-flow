@@ -1,0 +1,2 @@
+accident=org.asocframework.flow.plugin.AccidentPlugin
+log=org.asocframework.flow.plugin.LogPlugin

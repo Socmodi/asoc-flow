@@ -1,35 +1,32 @@
 package org.asocframework.flow.engine;
 
-import org.asocframework.flow.constants.PluginConstants;
-import org.asocframework.flow.context.EngineContext;
+import org.asocframework.flow.common.constants.ApplicationConstants;
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventHolder;
-import org.asocframework.flow.exception.EngineRuntimeException;
+import org.asocframework.flow.event.EventInvoker;
+import org.asocframework.flow.common.exception.EngineRuntimeException;
 import org.asocframework.flow.plugin.AccidentPlugin;
 import org.asocframework.flow.plugin.Plugin;
-import org.asocframework.flow.plugin.PluginHandler;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 /**
  * @author jiqing
  * @version $Id: FlowEngineContext，v 1.0 2017/10/16 17:09 jiqing Exp $
  * @desc
  */
-public class FlowEngineContext {
+public class FlowEngineApplication {
 
     private Map<String,EventHolder> holders = new HashMap();
 
     private Map<String,Boolean> plugins = new HashMap();
-
-    private PluginHandler pluginHandler;
 
     private DataSource dataSource;
 
@@ -37,24 +34,22 @@ public class FlowEngineContext {
 
     private boolean lazy;
 
-    public FlowEngineContext() {
+    public FlowEngineApplication() {
 
     }
 
-
-    public FlowEngineContext(Map<String, EventHolder> holders) {
+    public FlowEngineApplication(Map<String, EventHolder> holders) {
         this.holders = holders;
         EngineHandler.eventZone = holders;
     }
 
-
-    public EventContext execute(String eventName,EventContext context){
-        EventHolder eventHolder = holders.get(eventName);
-        eventHolder.isActive();
-
-        return context;
+    public EventContext execute(EventContext context){
+        EventHolder eventHolder = holders.get(context.getEvent());
+        if(eventHolder==null||eventHolder.isActive()){
+            throw new EngineRuntimeException("未被定义的事件或者事件已经撤销");
+        }
+        return new EngineProcesser(context,new ArrayList<EventInvoker>(eventHolder.getInvokers())).process();
     }
-
 
     @PostConstruct
     private void init(){
@@ -63,22 +58,26 @@ public class FlowEngineContext {
         try {
             ClassLoader classLoader = this.getClass().getClassLoader();
             Thread.currentThread().setContextClassLoader(classLoader);
-            String fileName = classLoader.getResource(PluginConstants.PLUGINS_FILE).getFile();
+            String fileName = classLoader.getResource(ApplicationConstants.PLUGINS_FILE).getFile();
             inputStream = new FileInputStream(fileName);
             Properties prop = new Properties();
             prop.load(inputStream);
             Set pluginSet = prop.entrySet();
             initPlugins(pluginSet);
         }catch (Exception e){
-            e.printStackTrace();
+            throw new EngineRuntimeException(e);
         }finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
             try {
                 inputStream.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new EngineRuntimeException(e);
             }
         }
+    }
+
+    private void  initFilter(){
+
     }
 
     private void initPlugins(Set pluginSet){
@@ -98,7 +97,7 @@ public class FlowEngineContext {
 
     private Plugin createPlugin(String pluginName,Class pluginClass) throws IllegalAccessException, InstantiationException {
         Plugin plugin = (Plugin) pluginClass.newInstance();
-        if(PluginConstants.ACCIDENT_PLUGIN.equals(pluginName)&&accidentMirror){
+        if(ApplicationConstants.ACCIDENT_PLUGIN.equals(pluginName)&&accidentMirror){
             AccidentPlugin accidentPlugin = (AccidentPlugin) plugin;
             accidentPlugin.setAccidentMirror(accidentMirror);
             accidentPlugin.setDataSource(dataSource);
@@ -118,14 +117,6 @@ public class FlowEngineContext {
 
     public void setPlugins(Map<String, Boolean> plugins) {
         this.plugins = plugins;
-    }
-
-    public PluginHandler getPluginHandler() {
-        return pluginHandler;
-    }
-
-    public void setPluginHandler(PluginHandler pluginHandler) {
-        this.pluginHandler = pluginHandler;
     }
 
     public void setHolders(Map<String, EventHolder> holders) {

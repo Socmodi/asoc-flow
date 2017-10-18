@@ -1,10 +1,9 @@
-package org.asocframework.flow.classloader;
+package org.asocframework.flow.common.classloader;
 
-import org.asocframework.flow.plugin.Plugin;
-
+import org.asocframework.flow.common.component.LogComponent;
+import org.slf4j.Logger;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 
 /**
  * @author jiqing
@@ -13,7 +12,12 @@ import java.util.List;
  */
 public class LoaderTest {
 
+    private static final Logger logger = LogComponent.getLogger(LoaderTest.class);
+
     public static void main(String args[]){
+        Properties properties = System.getProperties();
+        logger.error("logger error");
+        logger.info("logger test");
         FlowClassLoader classLoader = new FlowClassLoader();
         ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
         try {

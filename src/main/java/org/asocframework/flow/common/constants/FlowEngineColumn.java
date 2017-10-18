@@ -1,4 +1,4 @@
-package org.asocframework.flow.constants;
+package org.asocframework.flow.common.constants;
 
 /**
  * @author jiqing

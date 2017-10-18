@@ -2,7 +2,7 @@ package org.asocframework.flow.engine;
 
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventHolder;
-import org.asocframework.flow.exception.EngineRuntimeException;
+import org.asocframework.flow.common.exception.EngineRuntimeException;
 
 import java.util.Map;
 

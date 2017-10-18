@@ -2,7 +2,6 @@ package org.asocframework.flow.engine;
 
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventInvoker;
-import org.asocframework.flow.plugin.PluginHandler;
 
 import java.util.List;
 
@@ -17,7 +16,14 @@ public class EngineProcesser {
 
     private List<EventInvoker> invokers;
 
-    private PluginHandler pluginHandler;
+    public EngineProcesser() {
+
+    }
+
+    public EngineProcesser(EventContext context, List<EventInvoker> invokers) {
+        this.context = context;
+        this.invokers = invokers;
+    }
 
     public EventContext getContext() {
         return context;

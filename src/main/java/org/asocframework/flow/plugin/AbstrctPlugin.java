@@ -7,8 +7,4 @@ package org.asocframework.flow.plugin;
  */
 public abstract class AbstrctPlugin implements Plugin {
 
-    public PluginType getType() {
-        return PluginType.BEFORE_PLUGIN;
-    }
-
 }

@@ -1,29 +1,23 @@
 package org.asocframework.flow.spring;
 
-import org.asocframework.flow.constants.FlowEngineColumn;
-import org.asocframework.flow.constants.FlowEngineTag;
-import org.asocframework.flow.engine.FlowEngine;
-import org.asocframework.flow.engine.FlowEngineContext;
+import org.asocframework.flow.common.constants.FlowEngineColumn;
+import org.asocframework.flow.common.constants.FlowEngineTag;
+import org.asocframework.flow.engine.FlowEngineApplication;
 import org.asocframework.flow.event.EventHolder;
 import org.asocframework.flow.event.EventInvoker;
+import org.asocframework.flow.common.exception.EngineRuntimeException;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
-import org.springframework.beans.factory.support.ManagedProperties;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-
 import java.util.List;
 import java.util.Map;
 
-import static javax.swing.text.html.CSS.getAttribute;
-import static sun.jvm.hotspot.oops.CellTypeState.ref;
 
 /**
  * @author jiqing
@@ -32,31 +26,32 @@ import static sun.jvm.hotspot.oops.CellTypeState.ref;
  */
 public class FlowEngineBeanDefinitionParser extends AbstractBeanDefinitionParser{
 
-    protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(FlowEngineContext.class);
+
+    protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext){
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(FlowEngineApplication.class);
         Element events = DomUtils.getChildElementByTagName(element, FlowEngineTag.EVENTS_TAG);
         factory.addPropertyValue(FlowEngineColumn.ENGINE_HOLDERS,parseHolders(events));
-        parserProperties(element,factory,FlowEngineContext.class);
+        parserProperties(element,factory);
         return factory.getBeanDefinition();
     }
 
-    private void parserProperties(Element element,BeanDefinitionBuilder factory,Class clazz){
-        List<Element> properties = DomUtils.getChildElementsByTagName(element,"property");
+    private void parserProperties(Element element,BeanDefinitionBuilder factory){
+        List<Element> properties = DomUtils.getChildElementsByTagName(element,FlowEngineTag.PROPERTY_TAG);
         for (Element property : properties) {
-            parseProperty(property,factory,clazz);
+            parseProperty(property,factory);
         }
     }
 
-    private void parseProperty(Element property,BeanDefinitionBuilder builder,Class clazz){
-        String name = property.getAttribute("name");
-        String ref = property.getAttribute("ref");
+    private void parseProperty(Element property,BeanDefinitionBuilder builder){
+        String name = property.getAttribute(FlowEngineTag.PROPERTY_NAME_ATTRIBUTE);
+        String ref = property.getAttribute(FlowEngineTag.PROPERTY_REF_ATTRIBUTE);
         if(ref!=null&&ref.length()>0){
             builder.addPropertyReference(name,ref);
             return;
         }
-        String value = property.getAttribute("value");
+        String value = property.getAttribute(FlowEngineTag.PROPERTY_VALUE_ATTRIBUTE);
         if(value==null || value.length()<=0){
-            throw new RuntimeException();
+            throw new EngineRuntimeException();
         }
         builder.addPropertyValue(name,value);
     }

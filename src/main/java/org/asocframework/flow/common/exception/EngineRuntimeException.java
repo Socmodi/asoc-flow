@@ -1,4 +1,4 @@
-package org.asocframework.flow.exception;
+package org.asocframework.flow.common.exception;
 
 /**
  * @author jiqing
@@ -15,4 +15,7 @@ public class EngineRuntimeException extends RuntimeException{
         super(message);
     }
 
+    public EngineRuntimeException(Exception e) {
+        super(e);
+    }
 }

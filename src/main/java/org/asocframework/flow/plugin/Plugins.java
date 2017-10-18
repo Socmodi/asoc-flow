@@ -1,6 +1,6 @@
 package org.asocframework.flow.plugin;
 
-import org.asocframework.flow.constants.PluginConstants;
+import org.asocframework.flow.common.constants.PluginConstants;
 
 import java.util.HashMap;
 import java.util.Map;

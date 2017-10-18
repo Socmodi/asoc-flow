@@ -1,7 +1,8 @@
 package org.asocframework.flow.plugin;
 
 import org.asocframework.flow.event.EventContext;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 
 /**
@@ -11,14 +12,12 @@ import javax.sql.DataSource;
  */
 public class AccidentPlugin extends AbstrctPlugin{
 
+    private static final Logger logger = LoggerFactory.getLogger(AccidentPlugin.class);
+
     private boolean accidentMirror;
 
     private DataSource dataSource;
 
-    @Override
-    public PluginType getType() {
-        return PluginType.AROUND_PLUGIN;
-    }
 
 
     public void init() {
@@ -26,7 +25,6 @@ public class AccidentPlugin extends AbstrctPlugin{
     }
 
     public boolean processAccident(EventContext context){
-
 
         return true;
 
