@@ -26,7 +26,7 @@ public class EventInvoker {
 
     private Method invoke;
 
-    private AtomicBoolean inited;
+    private AtomicBoolean inited = new AtomicBoolean(false);
 
     public EventContext execute(EventContext context){
         if (!useful){
@@ -50,7 +50,7 @@ public class EventInvoker {
         }
     }
 
-    private void initInvoker(){
+    protected void initInvoker(){
         if(inited.compareAndSet(false,true)){
             try {
                 invoke = bean.getClass().getMethod(method,new Class[]{EventContext.class});

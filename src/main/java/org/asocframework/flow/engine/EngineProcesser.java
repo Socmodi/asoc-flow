@@ -1,7 +1,9 @@
 package org.asocframework.flow.engine;
 
+import org.asocframework.flow.common.constants.FlowEngineConstants;
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventInvoker;
+import org.asocframework.flow.plugin.AccidentPlugin;
 
 import java.util.List;
 
@@ -14,15 +16,14 @@ public class EngineProcesser {
 
     private EventContext context;
 
-    private List<EventInvoker> invokers;
+    private EngineInvoker engineInvoker;
 
     public EngineProcesser() {
-
     }
 
-    public EngineProcesser(EventContext context, List<EventInvoker> invokers) {
+    public EngineProcesser(EventContext context, EngineInvoker engineInvoker) {
         this.context = context;
-        this.invokers = invokers;
+        this.engineInvoker = engineInvoker;
     }
 
     public EventContext getContext() {
@@ -33,25 +34,18 @@ public class EngineProcesser {
         this.context = context;
     }
 
-    public List<EventInvoker> getInvokers() {
-        return invokers;
+    public EngineInvoker getEngineInvoker() {
+        return engineInvoker;
     }
 
-    public void setInvokers(List<EventInvoker> invokers) {
-        this.invokers = invokers;
+    public void setEngineInvoker(EngineInvoker engineInvoker) {
+        this.engineInvoker = engineInvoker;
     }
 
     public EventContext process(){
-        try {
-            for(EventInvoker invoker:invokers){
-                context = invoker.execute(context);
-                //invoker.isAsync();
-            }
-        }catch (Exception e){
-            //异常情况持久化当前上下文，以及处理节点当前情况，通过业务恢复工具，进行恢复
-        }
-        return context;
+        return engineInvoker.invoke(context);
     }
+
 
 
 

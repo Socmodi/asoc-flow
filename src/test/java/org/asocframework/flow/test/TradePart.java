@@ -1,5 +1,6 @@
 package org.asocframework.flow.test;
 
+import org.asocframework.flow.event.EventContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,4 +10,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TradePart {
+
+    public EventContext pay(EventContext context){
+        context.setSuccess(true);
+        System.out.println(context.getParam());
+        return context;
+    }
+
 }

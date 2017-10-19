@@ -1,17 +1,17 @@
 package org.asocframework.flow.engine;
 
 import org.asocframework.flow.common.constants.FlowEngineConstants;
+import org.asocframework.flow.common.extension.ExtensionWrapper;
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventHolder;
-import org.asocframework.flow.event.EventInvoker;
 import org.asocframework.flow.common.exception.EngineRuntimeException;
+import org.asocframework.flow.filter.Filter;
 import org.asocframework.flow.plugin.AccidentPlugin;
 import org.asocframework.flow.plugin.Plugin;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -34,13 +34,14 @@ public class FlowEngineApplication {
 
     private boolean lazy;
 
+    private ExtensionWrapper wrapper;
+
     public FlowEngineApplication() {
 
     }
 
     public FlowEngineApplication(Map<String, EventHolder> holders) {
         this.holders = holders;
-        EngineHandler.eventZone = holders;
     }
 
     public EventContext execute(EventContext context){
@@ -48,37 +49,66 @@ public class FlowEngineApplication {
         if(eventHolder==null||eventHolder.isActive()){
             throw new EngineRuntimeException("未被定义的事件或者事件已经撤销");
         }
-        return new EngineProcesser(context,new ArrayList<EventInvoker>(eventHolder.getInvokers())).process();
+        ProcessInvoker processInvoker = new ProcessInvoker(eventHolder.getInvokers(),(AccidentPlugin) EngineContext.getPlugin(FlowEngineConstants.ACCIDENT_PLUGIN));
+        EngineInvoker engineInvoker = this.wrapper.buildInvokerChain(processInvoker);
+        return new EngineProcesser(context,engineInvoker).process();
     }
 
     @PostConstruct
     private void init(){
+        this.wrapper = new ExtensionWrapper();
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        FileInputStream inputStream = null;
         try {
             ClassLoader classLoader = this.getClass().getClassLoader();
             Thread.currentThread().setContextClassLoader(classLoader);
-            String fileName = classLoader.getResource(FlowEngineConstants.PLUGINS_FILE).getFile();
-            inputStream = new FileInputStream(fileName);
-            Properties prop = new Properties();
-            prop.load(inputStream);
-            Set pluginSet = prop.entrySet();
-            initPlugins(pluginSet);
+            String pluginFile = classLoader.getResource(FlowEngineConstants.PLUGINS_FILE).getFile();
+            String filterFile = classLoader.getResource(FlowEngineConstants.FILTER_FILE).getFile();
+            initPlugins(getPropertySet(pluginFile));
+            initFilters(getPropertySet(filterFile));
         }catch (Exception e){
             throw new EngineRuntimeException(e);
         }finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                throw new EngineRuntimeException(e);
+        }
+    }
+
+    private Set getPropertySet(String fileName) throws IOException {
+        FileInputStream fileInputStream = null;
+        try{
+            fileInputStream = new FileInputStream(fileName);
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+            return properties.entrySet();
+        }catch (Exception e){
+            throw new EngineRuntimeException(e);
+        }finally {
+            if(fileInputStream!=null){
+                fileInputStream.close();
             }
         }
     }
 
-    private void  initFilter(){
+    private void  initFilters(Set filterSet){
+        if(filterSet==null||filterSet.isEmpty()){
+            return;
+        }
+        try {
+            Iterator<Map.Entry<String,String>> iterator = filterSet.iterator();
+            while (iterator.hasNext()){
+                Map.Entry<String,String> entry = iterator.next();
+                EngineContext.registerFilter(entry.getKey(),createFilter(Class.forName(entry.getValue())));
+            }
+        } catch (Exception e) {
+            throw new EngineRuntimeException();
+        }
 
     }
+
+    private Filter createFilter(Class filterClass) throws IllegalAccessException, InstantiationException {
+        Filter filter = (Filter) filterClass.newInstance();
+        return filter;
+    }
+
 
     private void initPlugins(Set pluginSet){
         if(pluginSet==null||pluginSet.isEmpty()){

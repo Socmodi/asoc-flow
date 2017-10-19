@@ -16,6 +16,14 @@ public class EventHolder {
 
     private List<EventInvoker> invokers = new ArrayList<EventInvoker>();
 
+    public void init(){
+        EventInvoker invoker;
+        for(int index=0;index<invokers.size();index++){
+            invoker = invokers.get(index);
+            invoker.initInvoker();
+        }
+    }
+
     public String getEventName() {
         return eventName;
     }
@@ -39,4 +47,5 @@ public class EventHolder {
     public void setActive(boolean active) {
         this.active = active;
     }
+
 }

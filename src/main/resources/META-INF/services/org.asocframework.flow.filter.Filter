@@ -1,2 +1,2 @@
-monitor=org.asocframework.flow.plugin.MonitorPlugin
-accident=org.asocframework.flow.plugin.AccidentPlugin
+monitor=org.asocframework.flow.filter.MonitorFilter
+accessLog=org.asocframework.flow.filter.AccessLogFilter

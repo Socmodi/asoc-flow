@@ -1,6 +1,7 @@
 package org.asocframework.flow.test;
 
-import org.asocframework.flow.engine.FlowEngineContext;
+import org.asocframework.flow.engine.FlowEngineApplication;
+import org.asocframework.flow.event.EventContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,11 +19,12 @@ import javax.annotation.Resource;
 public class FlowTest {
 
     @Resource
-    private FlowEngineContext flowEngineContext;
+    private FlowEngineApplication flowEngineApplication;
 
     @Test
     public void test(){
-        System.out.println("ssssssssss");
-
+        EventContext context = new EventContext("demo","demo");
+        context = flowEngineApplication.execute(context);
+        System.out.println(context.isSuccess());
     }
 }

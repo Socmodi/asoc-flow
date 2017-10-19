@@ -5,6 +5,7 @@ import org.asocframework.flow.event.EventInvoker;
 import org.asocframework.flow.plugin.AccidentPlugin;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author jiqing
@@ -13,12 +14,17 @@ import java.util.LinkedList;
  */
 public class ProcessInvoker implements EngineInvoker{
 
-    private LinkedList<EventInvoker> invokers;
+    private List<EventInvoker> invokers;
 
     private AccidentPlugin accidentPlugin;
 
-    public ProcessInvoker(LinkedList<EventInvoker> invokers) {
+    public ProcessInvoker(List<EventInvoker> invokers) {
         this.invokers = invokers;
+    }
+
+    public ProcessInvoker(List<EventInvoker> invokers, AccidentPlugin accidentPlugin) {
+        this.invokers = invokers;
+        this.accidentPlugin = accidentPlugin;
     }
 
     public EventContext invoke(EventContext eventContext) {

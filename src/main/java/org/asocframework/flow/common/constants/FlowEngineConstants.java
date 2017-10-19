@@ -14,9 +14,14 @@ public class FlowEngineConstants {
 
     public static final String LOG_PLUGIN = "log";
 
+
     public static final String PLUGINS_FILE = "META-INF/services/org.asocframework.flow.plugin.Plugin";
 
     /*filter*/
+    public static final String ACCESSLOG_FILTER = "accessLog";
+
+    public static final String MONITOR_FILTER = "monitor";
+
     public static final String FILTER_FILE = "META-INF/services/org.asocframework.flow.filter.Filter";
 
 
