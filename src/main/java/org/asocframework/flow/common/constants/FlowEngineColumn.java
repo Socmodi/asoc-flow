@@ -11,6 +11,8 @@ public class FlowEngineColumn {
 
     public static final String HOLDER_EVENT_NAME = "eventName";
 
+    public static final String INVOKER_NAME = "invokerName";
+
     public static final String HOLDER_INVOKERS = "invokers";
 
     public static final String INVOKER_BEAN = "bean";

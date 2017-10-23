@@ -3,29 +3,30 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:engine="http://org.asocframework.com/schema/asoc-flow"
-       xsi:schemaLocation="
-		http://www.springframework.org/schema/beans
+       xmlns:entry="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/task
         http://www.springframework.org/schema/task/spring-task.xsd
         http://org.asocframework.com/schema/asoc-flow
-        http://org.asocframework.com/schema/asoc-flow/asoc-flow.xsd">
+        http://org.asocframework.com/schema/asoc-flow/asoc-flow.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <task:annotation-driven/>
     <context:component-scan base-package="org.asocframework.flow" />
+
+    <import resource="springbeans-datasource.xml"/>
 
     <engine:flow id="flowEngineApplication" class="org.asocframework.flow.engine.FlowEngineApplication">
         <engine:events>
             <engine:event event-name="demo">
                 <engine:process bean="tradePart" method="pay" order="1" useful="true" async="false"/>
-               <!-- <engine:process bean="notifyPart" order="2" useful="true" async="false"/>
-                <engine:process bean="dataPart" order="0" useful="true" async="false"/>-->
+               <!-- <engine:process bean="notifyPart" order="2" useful="true" async="false"/>-->
+                <engine:process bean="dataPart" order="0" useful="true" async="false"/>
             </engine:event>
         </engine:events>
         <engine:property name="accidentMirror" value="true"/>
+        <!--<engine:property name="dataSource" ref="dataSource"/>-->
     </engine:flow>
-
 
 </beans>

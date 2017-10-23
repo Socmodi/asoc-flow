@@ -18,4 +18,8 @@ public class EngineRuntimeException extends RuntimeException{
     public EngineRuntimeException(Exception e) {
         super(e);
     }
+
+    public EngineRuntimeException(String s, Exception e) {
+
+    }
 }

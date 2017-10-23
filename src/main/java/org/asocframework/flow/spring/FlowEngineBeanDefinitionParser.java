@@ -95,6 +95,7 @@ public class FlowEngineBeanDefinitionParser extends AbstractBeanDefinitionParser
         factory.addPropertyValue(FlowEngineColumn.INVOKER_USEFUL,useful);
         factory.addPropertyValue(FlowEngineColumn.INVOKER_ASYNC,async);
         factory.addPropertyValue(FlowEngineColumn.INVOKER_METHOD,method);
+        factory.addPropertyValue(FlowEngineColumn.INVOKER_NAME,bean);
         return factory.getBeanDefinition();
     }
 

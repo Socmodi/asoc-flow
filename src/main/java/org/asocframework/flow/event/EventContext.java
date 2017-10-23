@@ -1,7 +1,13 @@
 package org.asocframework.flow.event;
 
-import org.asocframework.flow.store.AccidentMirror;
+import org.asocframework.flow.store.domain.AccidentMirror;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +63,8 @@ public class EventContext<P,R> implements Serializable{
 
     private transient AccidentMirror accidentMirror;
 
+
+    private int retryCount;
 
 
     public static  <P> EventContext create(String event, P param){
@@ -154,6 +162,14 @@ public class EventContext<P,R> implements Serializable{
         this.accidentMirror = accidentMirror;
     }
 
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
+    }
+
     /**
      * 值类型强制匹配查询
      * @param name
@@ -182,5 +198,23 @@ public class EventContext<P,R> implements Serializable{
             return (T) object;
         }
         return null;
+    }
+
+    public static void main(String args[]) throws Exception {
+        EventContext eventContext = new EventContext("demo","param");
+        File file = new File("/data/EventContext.txt");
+        file.createNewFile();
+        AccidentMirror mirror = new AccidentMirror();
+        mirror.setId("12345675432");
+        mirror.setStatus(1);
+        mirror.setEventName("demo");
+        eventContext.setResult(mirror);
+        ObjectOutputStream oo = new ObjectOutputStream(new FileOutputStream(file));
+        oo.writeObject(eventContext);
+        oo.close();
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        EventContext context = (EventContext) ois.readObject();
+        ois.close();
+        System.out.println("serializable end");
     }
 }

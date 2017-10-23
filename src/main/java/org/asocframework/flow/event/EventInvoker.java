@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class EventInvoker {
 
+    private String invokerName;
+
     private Object bean;
 
     private int order;
@@ -58,6 +60,14 @@ public class EventInvoker {
                 throw new EngineRuntimeException();
             }
         }
+    }
+
+    public String getInvokerName() {
+        return invokerName;
+    }
+
+    public void setInvokerName(String invokerName) {
+        this.invokerName = invokerName;
     }
 
     public Object getBean() {

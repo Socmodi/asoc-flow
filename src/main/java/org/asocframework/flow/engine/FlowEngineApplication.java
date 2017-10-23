@@ -54,6 +54,10 @@ public class FlowEngineApplication {
         return new EngineProcesser(context,engineInvoker).process();
     }
 
+    public EventContext recover(){
+        return null;
+    }
+
     @PostConstruct
     private void init(){
         this.wrapper = new ExtensionWrapper();

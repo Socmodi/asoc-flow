@@ -1,5 +1,8 @@
-package org.asocframework.flow.store;
+package org.asocframework.flow.store.domain;
 
+import com.alibaba.fastjson.JSON;
+import org.asocframework.flow.event.RecoverContext;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,13 +10,15 @@ import java.util.Date;
  * @version $Id: AccidentDO，v 1.0 2017/10/17 17:13 jiqing Exp $
  * @desc
  */
-public class AccidentMirror {
+public class AccidentMirror implements Serializable{
 
     private String id;
 
     private String eventName;
 
     private String invokersInfo;
+
+    private RecoverContext recoverContext;
 
     private Integer status;
 
@@ -88,4 +93,18 @@ public class AccidentMirror {
     public void setProcessUser(String processUser) {
         this.processUser = processUser;
     }
+
+    public RecoverContext getRecoverContext() {
+        return recoverContext;
+    }
+
+    public void setRecoverContext(RecoverContext recoverContext) {
+        this.recoverContext = recoverContext;
+    }
+
+    public String toMirrorString(){
+        return JSON.toJSONString(this);
+    }
+
+
 }

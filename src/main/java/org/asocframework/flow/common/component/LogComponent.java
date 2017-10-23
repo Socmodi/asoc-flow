@@ -13,6 +13,7 @@ import org.asocframework.flow.common.classloader.LoaderTest;
 import org.slf4j.LoggerFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author jiqing
@@ -21,9 +22,30 @@ import java.util.Date;
  */
 public class LogComponent {
 
+    private static Logger accidentLogger;
+
+    private static final AtomicBoolean initd = new AtomicBoolean(false);
+
+    public static void registerAccidentLogger(Logger logger){
+        if(logger==null){
+            return;
+        }
+        if(initd.compareAndSet(false,true)){
+            accidentLogger  = logger;
+        }
+    }
+
+    public static Logger getAccidentLogger(){
+        return accidentLogger;
+    }
+
+    public static void info(String message){
+        accidentLogger.info(message);
+    }
+
     public static Logger getLogger(Class<?> clazz) {
 
-        Logger rootLogger = (Logger) LoggerFactory.getLogger(clazz);
+        Logger rootLogger = (Logger) LoggerFactory.getLogger("root");
         LoggerContext loggerContext = rootLogger.getLoggerContext();
         loggerContext.reset();
         rootLogger.setLevel(Level.INFO);

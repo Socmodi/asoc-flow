@@ -7,6 +7,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import org.asocframework.flow.common.component.LogComponent;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -43,6 +44,9 @@ public class LogPlugin extends AbstrctPlugin{
         appender.setContext(loggerContext);
         appender.setEncoder(encoder);
         appender.start();
+        rootLogger.addAppender(appender);
+        LogComponent.registerAccidentLogger(rootLogger);
     }
+
 
 }
