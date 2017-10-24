@@ -1,10 +1,13 @@
 package org.asocframework.flow.engine;
 
+import org.asocframework.flow.common.component.ConvertComponent;
 import org.asocframework.flow.common.constants.FlowEngineConstants;
 import org.asocframework.flow.common.extension.ExtensionWrapper;
 import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.event.EventHolder;
 import org.asocframework.flow.common.exception.EngineRuntimeException;
+import org.asocframework.flow.event.EventInvoker;
+import org.asocframework.flow.event.RecoverContext;
 import org.asocframework.flow.filter.Filter;
 import org.asocframework.flow.plugin.AccidentPlugin;
 import org.asocframework.flow.plugin.Plugin;
@@ -12,8 +15,11 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -36,6 +42,8 @@ public class FlowEngineApplication {
 
     private ExtensionWrapper wrapper;
 
+    private EngineControl engineControl;
+
     public FlowEngineApplication() {
 
     }
@@ -49,13 +57,45 @@ public class FlowEngineApplication {
         if(eventHolder==null||eventHolder.isActive()){
             throw new EngineRuntimeException("未被定义的事件或者事件已经撤销");
         }
-        ProcessInvoker processInvoker = new ProcessInvoker(eventHolder.getInvokers(),(AccidentPlugin) EngineContext.getPlugin(FlowEngineConstants.ACCIDENT_PLUGIN));
-        EngineInvoker engineInvoker = this.wrapper.buildInvokerChain(processInvoker);
-        return new EngineProcesser(context,engineInvoker).process();
+        checkInvokers(eventHolder.getInvokers());
+        EngineInvoker engineInvoker = new ProcessInvoker(eventHolder.getInvokers(),(AccidentPlugin) EngineContext.getPlugin(FlowEngineConstants.ACCIDENT_PLUGIN));
+        return doExecute(engineInvoker,context);
     }
 
-    public EventContext recover(){
-        return null;
+    public EventContext recover(RecoverContext recoverContext){
+        EventContext eventContext = ConvertComponent.recoverContextToEventContext(recoverContext);
+        EventHolder eventHolder = holders.get(eventContext.getEvent());
+        if(eventHolder==null||eventHolder.isActive()){
+            throw new EngineRuntimeException("未被定义的事件或者事件已经撤销");
+        }
+        List<EventInvoker> invokers = recoverInvokers(recoverContext,eventHolder);
+        checkInvokers(invokers);
+        EngineInvoker engineInvoker = new RecoverInvoker(eventHolder.getInvokers(),(AccidentPlugin) EngineContext.getPlugin(FlowEngineConstants.ACCIDENT_PLUGIN));
+        return doExecute(engineInvoker,eventContext);
+    }
+
+    private boolean checkInvokers(List<EventInvoker> invokers){
+        if(invokers==null||invokers.isEmpty()){
+            throw new EngineRuntimeException("事件不存在任何处理节点");
+        }
+        return true;
+    }
+
+    private EventContext doExecute(EngineInvoker engineInvoker,EventContext context){
+        engineInvoker = this.wrapper.buildInvokerChain(engineInvoker);
+        return new EngineProcesser(context,engineInvoker).process();
+
+    }
+
+    private List<EventInvoker>  recoverInvokers(RecoverContext recoverContext,EventHolder eventHolder){
+        List<EventInvoker> invokerList = eventHolder.getInvokers();
+        List<EventInvoker> recoverInvokers = new ArrayList<EventInvoker>();
+        for(EventInvoker invoker:invokerList){
+            if(recoverContext.getRecoverInvokers().contains(invoker.getInvokerName())) {
+                recoverInvokers.add(invoker);
+            }
+        }
+        return recoverInvokers;
     }
 
     @PostConstruct
@@ -100,7 +140,7 @@ public class FlowEngineApplication {
             Iterator<Map.Entry<String,String>> iterator = filterSet.iterator();
             while (iterator.hasNext()){
                 Map.Entry<String,String> entry = iterator.next();
-                EngineContext.registerFilter(entry.getKey(),createFilter(Class.forName(entry.getValue())));
+                EngineContext.registerFilter(entry.getKey(),createFilter((Class<Filter>) Class.forName(entry.getValue())));
             }
         } catch (Exception e) {
             throw new EngineRuntimeException();
@@ -108,9 +148,8 @@ public class FlowEngineApplication {
 
     }
 
-    private Filter createFilter(Class filterClass) throws IllegalAccessException, InstantiationException {
-        Filter filter = (Filter) filterClass.newInstance();
-        return filter;
+    private Filter createFilter(Class<Filter> filterClass) throws IllegalAccessException, InstantiationException {
+        return filterClass.newInstance();
     }
 
 
@@ -135,8 +174,13 @@ public class FlowEngineApplication {
             AccidentPlugin accidentPlugin = (AccidentPlugin) plugin;
             accidentPlugin.setAccidentMirror(accidentMirror);
             accidentPlugin.setDataSource(dataSource);
+            plugin.init();
+            if(accidentPlugin.isPersistence()){
+                engineControl = new EngineControl(accidentPlugin.getAccidentStore(),this);
+            }
+        }else {
+            plugin.init();
         }
-        plugin.init();
         return plugin;
     }
 
@@ -181,4 +225,11 @@ public class FlowEngineApplication {
         this.lazy = lazy;
     }
 
+    public EngineControl getEngineControl() {
+        return engineControl;
+    }
+
+    public void setEngineControl(EngineControl engineControl) {
+        this.engineControl = engineControl;
+    }
 }

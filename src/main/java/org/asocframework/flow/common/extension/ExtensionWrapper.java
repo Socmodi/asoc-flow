@@ -6,6 +6,7 @@ import org.asocframework.flow.event.EventContext;
 import org.asocframework.flow.filter.Filter;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,8 +16,19 @@ import java.util.Map;
  */
 public class ExtensionWrapper {
 
-    public static EngineInvoker buildInvokerChain(EngineInvoker last){
-        Iterator<Map.Entry<String,Filter>> iterator = EngineContext.getFILTERS().entrySet().iterator();
+    public EngineInvoker buildInvokerChain(EngineInvoker last){
+
+        List<Filter> filters = EngineContext.getFilterList();
+        for(final Filter filter:filters){
+            final EngineInvoker next = last;
+            last = new EngineInvoker() {
+                public EventContext invoke(EventContext eventContext) {
+                    return filter.invoke(next,eventContext);
+                }
+            };
+        }
+        return last;
+        /*Iterator<Map.Entry<String,Filter>> iterator = EngineContext.getFILTERS().entrySet().iterator();
         while (iterator.hasNext()){
             final Filter filter = iterator.next().getValue();
             final EngineInvoker next = last;
@@ -26,7 +38,7 @@ public class ExtensionWrapper {
                 }
             };
         }
-        return last;
+        return last;*/
     }
 
 }

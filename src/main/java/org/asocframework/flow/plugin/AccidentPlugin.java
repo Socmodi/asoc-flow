@@ -10,8 +10,6 @@ import org.asocframework.flow.store.AccidentStore;
 import org.asocframework.flow.store.dal.AccidentDao;
 import org.asocframework.flow.store.domain.AccidentMirror;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import javax.sql.DataSource;
 import java.util.Date;
@@ -23,8 +21,6 @@ import java.util.List;
  * @desc
  */
 public class AccidentPlugin extends AbstrctPlugin{
-
-    private static final Logger logger = LoggerFactory.getLogger(AccidentPlugin.class);
 
     private boolean accidentMirror;
 
@@ -71,14 +67,20 @@ public class AccidentPlugin extends AbstrctPlugin{
     public boolean processAccident(EventContext context){
         AccidentMirror accidentMirror = createAccidentMirror(context);
         context.setAccidentMirror(accidentMirror);
-        doProcessAccident(accidentMirror);
+        doProcessAccident(accidentMirror,this.persistence);
         return true;
     }
 
-    private void doProcessAccident(AccidentMirror accidentMirror){
-        LogComponent.info(accidentMirror.toMirrorString());
+    public boolean processAccident(EventContext context,boolean persistence){
+        AccidentMirror accidentMirror = createAccidentMirror(context);
+        context.setAccidentMirror(accidentMirror);
+        doProcessAccident(accidentMirror,persistence);
+        return true;
+    }
 
-        if(persistence){
+    private void doProcessAccident(AccidentMirror accidentMirror,boolean persistence){
+        LogComponent.info(accidentMirror.toMirrorString());
+        if(persistence&&this.persistence){
             accidentStore.getAccidentDao().insert(accidentMirror);
         }
     }
@@ -93,6 +95,8 @@ public class AccidentPlugin extends AbstrctPlugin{
         recoverContext.setErrorMsg(context.getErrorMsg());
         recoverContext.setSuccess(context.isSuccess());
         recoverContext.setRecoverInvokers(createRecoverInvokers(context.getInvokers()));
+        recoverContext.setParam(context.getParam());
+        recoverContext.setResult(context.getResult());
         accidentMirror.setInvokersInfo(recoverContext.getRecoverInvokers());
         accidentMirror.setRecoverContext(recoverContext);
         return accidentMirror;
@@ -148,4 +152,11 @@ public class AccidentPlugin extends AbstrctPlugin{
         return stringBuilder.toString();
     }
 
+    public boolean isPersistence() {
+        return persistence;
+    }
+
+    public void setPersistence(boolean persistence) {
+        this.persistence = persistence;
+    }
 }

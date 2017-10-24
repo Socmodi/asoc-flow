@@ -9,7 +9,7 @@ import java.util.Map;
  * @version $Id: RecoverContext，v 1.0 2017/10/19 13:51 jiqing Exp $
  * @desc
  */
-public class RecoverContext implements Serializable{
+public class RecoverContext<P,R> implements Serializable{
 
     /**
      * 指令
@@ -21,6 +21,10 @@ public class RecoverContext implements Serializable{
      */
     public String  recoverInvokers;
 
+
+    private P param;
+
+    private R result;
 
     /**
      * 调用结果
@@ -101,5 +105,21 @@ public class RecoverContext implements Serializable{
 
     public void setRetryCount(int retryCount) {
         this.retryCount = retryCount;
+    }
+
+    public P getParam() {
+        return param;
+    }
+
+    public void setParam(P param) {
+        this.param = param;
+    }
+
+    public R getResult() {
+        return result;
+    }
+
+    public void setResult(R result) {
+        this.result = result;
     }
 }

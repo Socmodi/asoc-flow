@@ -67,6 +67,9 @@ public class EventContext<P,R> implements Serializable{
     private int retryCount;
 
 
+    public EventContext() {
+    }
+
     public static  <P> EventContext create(String event, P param){
         return new EventContext(event,param);
     }

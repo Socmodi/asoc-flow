@@ -1,9 +1,11 @@
 package org.asocframework.flow.test;
 
+import com.alibaba.fastjson.JSON;
 import org.asocframework.flow.common.constants.FlowEngineConstants;
 import org.asocframework.flow.engine.EngineContext;
 import org.asocframework.flow.engine.FlowEngineApplication;
 import org.asocframework.flow.event.EventContext;
+import org.asocframework.flow.event.RecoverContext;
 import org.asocframework.flow.plugin.AccidentPlugin;
 import org.asocframework.flow.store.condition.QueryCondition;
 import org.asocframework.flow.store.domain.AccidentMirror;
@@ -38,6 +40,12 @@ public class FlowTest {
     }
 
     @Test
+    public void testRecover(){
+        EventContext eventContext = flowEngineApplication.getEngineControl().recoverById("171024022838071936219586");
+        System.out.println("ending");
+    }
+
+    @Test
     public void testDb(){
         AccidentPlugin accidentPlugin = (AccidentPlugin) EngineContext.getPlugin(FlowEngineConstants.ACCIDENT_PLUGIN);
         EventContext context = new EventContext("demo","demo");
@@ -49,7 +57,7 @@ public class FlowTest {
     @Test
     public void testDbFind(){
         AccidentPlugin accidentPlugin = (AccidentPlugin) EngineContext.getPlugin(FlowEngineConstants.ACCIDENT_PLUGIN);
-        AccidentMirror accidentMirror = accidentPlugin.getAccidentStore().getAccidentDao().find("171020061638061142456763");
+        AccidentMirror accidentMirror = accidentPlugin.getAccidentStore().getAccidentDao().find("171024022838071936219586");
         System.out.println("ending");
     }
     @Test
@@ -73,6 +81,15 @@ public class FlowTest {
             Driver driver = (Driver) iterator.next();
             System.out.println("driver:" + driver.getClass() + ",loader:" + driver.getClass().getClassLoader());
         }
+    }
+
+    @Test
+    public void testJson(){
+        EventContext context = new EventContext("demo",new QueryCondition());
+        String json = JSON.toJSONString(context);
+
+        EventContext context1 = JSON.parseObject(json,EventContext.class);
+        System.out.println("ending");
     }
 
 }

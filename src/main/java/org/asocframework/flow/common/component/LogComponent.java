@@ -71,16 +71,6 @@ public class LogComponent {
         appender.setContext(loggerContext);
         appender.setEncoder(encoder);
         appender.start();
-
-
-
-/*        FileAppender<ILoggingEvent> appender = new FileAppender<ILoggingEvent>();
-        String fileName = getTime("yyyyMMdd") + ".log";
-        String filePath = "/data/logs/"+clazz.getSimpleName() + "/" + fileName;
-        appender.setFile(filePath);
-        appender.setContext(loggerContext);
-        appender.setEncoder(encoder);
-        appender.start();*/
         rootLogger.addAppender(appender);
         return rootLogger;
     }

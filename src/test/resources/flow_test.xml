@@ -21,12 +21,12 @@
         <engine:events>
             <engine:event event-name="demo">
                 <engine:process bean="tradePart" method="pay" order="1" useful="true" async="false"/>
-               <!-- <engine:process bean="notifyPart" order="2" useful="true" async="false"/>-->
-                <engine:process bean="dataPart" order="0" useful="true" async="false"/>
+               <!-- <engine:process bean="notifyPart" method="pay" order="2" useful="true" async="false"/>-->
+                <engine:process bean="dataPart" method="pay" order="0" useful="true" async="false"/>
             </engine:event>
         </engine:events>
         <engine:property name="accidentMirror" value="true"/>
-        <!--<engine:property name="dataSource" ref="dataSource"/>-->
+        <engine:property name="dataSource" ref="dataSource"/>
     </engine:flow>
 
 </beans>
