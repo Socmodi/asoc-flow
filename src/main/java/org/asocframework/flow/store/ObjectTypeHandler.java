@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * @desc
  */
 @MappedTypes(value = {RecoverContext.class})
-@MappedJdbcTypes(value = {JdbcType.VARCHAR})
+@MappedJdbcTypes(value = {JdbcType.BLOB})
 public class ObjectTypeHandler extends BaseTypeHandler{
 
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Object o, JdbcType jdbcType) throws SQLException {
