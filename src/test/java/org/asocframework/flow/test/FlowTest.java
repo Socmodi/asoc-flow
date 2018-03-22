@@ -34,7 +34,7 @@ public class FlowTest {
 
     @Test
     public void test(){
-        EventContext context = new EventContext("demo","demo");
+        EventContext context = new EventContext("pay","demo");
         context = flowEngineApplication.execute(context);
         System.out.println(context.isSuccess());
     }

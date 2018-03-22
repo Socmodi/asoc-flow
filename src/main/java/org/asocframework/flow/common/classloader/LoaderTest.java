@@ -3,6 +3,7 @@ package org.asocframework.flow.common.classloader;
 import org.asocframework.flow.common.component.LogComponent;
 import org.slf4j.Logger;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -26,9 +27,9 @@ public class LoaderTest {
             public Class<?> loadClass(String name) throws ClassNotFoundException {
                 InputStream inputStream =null;
                 try{
-                    String FileName = name.substring(name.lastIndexOf(".")+1)+".class";
-                    //inputStream = new FileInputStream(new File(name));
-                    inputStream = getClass().getResourceAsStream(FileName);
+                    //String FileName = name.substring(name.lastIndexOf(".")+1)+".class";
+                    inputStream = new FileInputStream(new File(name));
+                    //inputStream = getClass().getResourceAsStream(FileName);
                     if(inputStream==null){
                         return super.loadClass(name);
                     }
@@ -54,16 +55,19 @@ public class LoaderTest {
             Thread.currentThread().setContextClassLoader(loader);
 
             //Class monitor = loader.loadClass("org.asocframework.flow.filter.MonitorFilter");
-            Class monitor = loader.loadClass("org.asocframework.flow.common.classloader.LoaderTest");
+            //Class monitor = loader.loadClass("org.asocframework.flow.common.classloader.LoaderTest");
             //Class clazz = contextLoader.loadClass("org.asocframework.flow.filter.MonitorFilter");
-            Object flowMontitor = monitor.newInstance();
+            //Object flowMontitor = monitor.newInstance();
 
             //System.out.println(flowMontitor instanceof  org.asocframework.flow.filter.MonitorFilter);
-            System.out.println(flowMontitor instanceof org.asocframework.flow.common.classloader.LoaderTest);
-            String fileName = classLoader.getResource("META-INF/dubbo/internal").getFile();
-            System.out.println(fileName);
-            File file = new File("/Users/zcy/IdeaProjects/asoc-flow/target/classes/org/asocframework/flow/monitor/FlowMontitor.class");
+            //System.out.println(flowMontitor instanceof org.asocframework.flow.common.classloader.LoaderTest);
+            //String fileName = classLoader.getResource("META-INF/dubbo/internal").getFile();
+            //System.out.println(fileName);
+            File file = new File("/Users/zcy/IdeaProjects/asoc-flow/target/classes/org/asocframework/flow/filter/Filter.class");
             System.out.println(file.exists());
+            Class clazz1 = contextLoader.loadClass("org.asocframework.flow.filter.Filter");
+            Class clazz2  = loader.loadClass("/Users/zcy/IdeaProjects/asoc-flow/target/classes/org/asocframework/flow/filter/Filter.class");
+            System.out.println(clazz1.equals(clazz2));
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

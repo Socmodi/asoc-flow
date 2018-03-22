@@ -19,7 +19,7 @@
 
     <engine:flow id="flowEngineApplication" class="org.asocframework.flow.engine.FlowEngineApplication">
         <engine:events>
-            <engine:event event-name="demo">
+            <engine:event event-name="pay">
                 <engine:process bean="tradePart" method="pay" order="1" useful="true" async="false"/>
                <!-- <engine:process bean="notifyPart" method="pay" order="2" useful="true" async="false"/>-->
                 <engine:process bean="dataPart" method="pay" order="0" useful="true" async="false"/>
